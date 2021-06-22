@@ -45,20 +45,24 @@ function wagesEarnedOnDate(record, dateTime) {
     return (wages * record.payPerHour)
 }
 
-function allWagesFor(record){
-    const allWages = record.timeInEvents.map(function(day){
-        return wagesEarnedOnDate(record, day.date)
+
+let allWagesFor = function () {
+    let eligibleDates = this.timeInEvents.map(function (e) {
+        return e.date
     })
-    return allWages.reduce((acc, cv) => acc + cv)
+
+    let payable = eligibleDates.reduce(function (memo, d) {
+        return memo + wagesEarnedOnDate.call(this, d)
+    }.bind(this), 0) // <== Hm, why did we need to add bind() there? We'll discuss soon!
+
+    return payable
 }
 
-function calculatePayroll(records) {
-    let payOut = (records.map(function(employee){
-        return allWagesFor(employee)
-    }));
-    return payOut.reduce((acc, cv)=> acc +cv)
 
-}
+let calculatePayroll = function (records){
+    return records.reduce(function(acc, cv){
+        return acc + allWagesFor.call(cv)}, 0)
+    }
 
 function findEmployeeByFirstName(srcArray, firstName) {
     let finder = srcArray.find(function(name){
@@ -68,13 +72,10 @@ function findEmployeeByFirstName(srcArray, firstName) {
     return finder
 }
 
-function calculatePayroll(records) { 
-    let allPay = records.map(function(employee){
-        return allWagesFor(employee)
-    })
-    return allPay.reduce((acc, cv) => acc + cv)
-}
-
+let calculatePayroll = function (records){
+    return records.reduce(function(acc, cv){
+        return acc + allWagesFor.call(cv)}, 0)
+    }
 
 
 
