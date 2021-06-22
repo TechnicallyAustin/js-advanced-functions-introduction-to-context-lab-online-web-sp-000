@@ -46,13 +46,14 @@ function wagesEarnedOnDate(record, dateTime) {
 }
 
 function allWagesFor(record){
-    const allWages = record.timeInEvents.map((day) => {return wagesEarnedOnDate(record, day.date)})
+    const allWages = record.timeInEvents.map(function(day){
+        return wagesEarnedOnDate(record, day.date)
+    })
     return allWages.reduce((acc, cv) => acc + cv)
-
 }
 
-function calculatePayroll(record) {
-    let payOut = (record.map(function(employee){
+function calculatePayroll(records) {
+    let payOut = (records.map(function(employee){
         return allWagesFor(employee)
     }));
     return payOut.reduce((acc, cv)=> acc +cv)
@@ -72,8 +73,6 @@ function calculatePayroll(records) {
         return allWagesFor(employee)
     })
     return allPay.reduce((acc, cv) => acc + cv)
-
-
 }
 
 
